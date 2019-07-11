@@ -1,1 +1,9 @@
-<p>scores works!</p>
+<header>
+  <h4>Your Scores</h4>
+</header>
+<app-score-list [scoresModel]="scoresModel$ | async"></app-score-list>
+<pre>{{(scoresModel$ | async) | json}}</pre>
+<input type="button"
+       class="btn btn-success"
+       value="Play Again?"
+       (click)="playAgain()">

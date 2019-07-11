@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionModel } from '../../models';
-import { MathState, selectQuestionModel, selectAtEndOfQuestions } from '../../reducers';
+import { MathState, selectQuestionModel, selectAtEndOfQuestions, selectGameOverMan } from '../../reducers';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { answerProvided } from '../../actions/questions.actions';
+import { answerProvided, playAgain } from '../../actions/questions.actions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -13,17 +14,28 @@ import { answerProvided } from '../../actions/questions.actions';
 export class GameComponent implements OnInit {
   model$: Observable<QuestionModel>;
   atEnd$: Observable<boolean>;
-  constructor(private store: Store<MathState>) { }
+  gameOver$: Observable<boolean>;
+  constructor(private store: Store<MathState>, private router: Router) { }
 
   ngOnInit() {
     this.model$ = this.store.select(selectQuestionModel);
     this.atEnd$ = this.store.select(selectAtEndOfQuestions);
+    this.gameOver$ = this.store.select(selectGameOverMan);
   }
-  next(guessE1: HTMLInputElement) {
-    const guess = guessE1.valueAsNumber;
+  next(guessEl: HTMLInputElement) {
+    const guess = guessEl.valueAsNumber;
     this.store.dispatch(answerProvided({ guess }));
-    guessE1.value = ''; // clear it out for the next quesion
-    guessE1.focus(); // put the cursor back there
+    guessEl.value = ''; // clear it out for the next quesion
+    guessEl.focus(); // put the cursor back there
   }
 
+  playAgain() {
+    this.store.dispatch(playAgain());
+  }
+
+  finish(guessEl: HTMLInputElement) {
+    const guess = guessEl.valueAsNumber;
+    this.store.dispatch(answerProvided({ guess }));
+    this.router.navigate(['math', 'scores']);
+  }
 }
