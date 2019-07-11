@@ -54,7 +54,7 @@ export const selectQuestionModel = createSelector(
 export const selectAtEndOfQuestions = createSelector(
   selectTotalNumberOfQuestions,
   selectCurrentQuestionId,
-  (total, current) => total === current
+  (total, current) => current >= total
 );
 
 export const selectGameOverMan = createSelector(
