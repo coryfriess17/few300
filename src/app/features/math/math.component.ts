@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { MathState, selectAtEndOfQuestions, selectHideScores } from './reducers';
+import { Observable } from 'rxjs';
+import { loadSavedScores } from './actions/saved-scores.actions';
 
 @Component({
   selector: 'app-math',
@@ -7,9 +11,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MathComponent implements OnInit {
 
-  constructor() { }
+  hideScores$: Observable<boolean>;
+  constructor(private store: Store<MathState>) { }
 
   ngOnInit() {
+    this.hideScores$ = this.store.select(selectHideScores);
+    this.store.dispatch(loadSavedScores());
   }
 
 }
